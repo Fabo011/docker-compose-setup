@@ -1,12 +1,27 @@
 version: '3.9'
 
 services:
+  
+   database:
+     image: postgres
+     restart: always
+     environment: 
+       POSTGRES_USER: admin
+       POSTGRES_PASSWORD: test
+       POSTGRES_DB: example-database
+     ports:
+       - 5432:5432
+     volumes:
+       - .data:/var/lib/postgresql/data
+
    backend:
        image: backend
        container_name: backend
        build: ./backend
        ports: 
           - 3030:3030
+       depends_on:
+         - database
    
    frontend:
        image: frontend
@@ -15,7 +30,7 @@ services:
        env_file:
         - .env
        ports: 
-         - ${PORT}:${PORT}
+         - ${PORT}:${PORT} # Example with env variables
        depends_on: 
          - backend
 
